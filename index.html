@@ -308,7 +308,7 @@
           <th data-key="bankName">בנק מלווה <span class="arrow"></span></th>
           <th data-key="originalAmount">סכום מקורי <span class="arrow"></span></th>
           <th data-key="balance">יתרה נוכחית <span class="arrow"></span></th>
-          <th data-key="monthlyPayment">תשלום חודשי <span class="arrow"></span></th>
+          <th data-key="monthlyPayment">תשלום חודשי (ממוצע) <span class="arrow"></span></th>
           <th data-key="paymentDay">יום בחודש <span class="arrow"></span></th>
           <th data-key="annualRate">ריבית שנתית <span class="arrow"></span></th>
           <th data-key="startDate">תחילה <span class="arrow"></span></th>
@@ -354,7 +354,7 @@
         </div>
         <div class="field-row">
           <div class="field">
-            <label>תשלום חודשי (₪) *</label>
+            <label>תשלום חודשי (ממוצע) (₪) *</label>
             <input type="number" id="f_monthlyPayment" required min="0" step="1">
           </div>
           <div class="field">
@@ -601,7 +601,7 @@ function renderTable(rows){
       '<td data-label="סכום מקורי">' + fmtMoney(r.originalAmount) + '</td>' +
       '<td data-label="יתרה נוכחית"><div class="balance-cell"><span class="balance-amount">' + fmtMoney(r.balance) + '</span>' +
         '<div class="progress-track"><div class="progress-fill" style="width:' + r.pctPaid.toFixed(0) + '%"></div></div></div></td>' +
-      '<td data-label="תשלום חודשי">' + fmtMoney(r.monthlyPayment) + soonBadge + '</td>' +
+      '<td data-label="תשלום חודשי (ממוצע)">' + fmtMoney(r.monthlyPayment) + soonBadge + '</td>' +
       '<td data-label="יום בחודש">' + r.paymentDay + '</td>' +
       '<td data-label="ריבית שנתית">' + (Number(r.annualRate)||0).toFixed(2) + '%</td>' +
       '<td data-label="תחילה">' + fmtDate(r.startDate) + '</td>' +
