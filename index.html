@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>הנבחרת | מעקב הלוואות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700;900&family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-deep:#0B1E3D;
+    --navy:#142A52;
+    --navy-soft:#1F3A6B;
+    --gold:#C9A227;
+    --gold-light:#E4C868;
+    --cream:#F7F5EF;
+    --paper:#FFFFFF;
+    --ink:#1F2430;
+    --muted:#6B7280;
+    --danger:#C0392B;
+    --danger-bg:#FBEAE8;
+    --success:#2F8F5B;
+    --success-bg:#E9F5EE;
+    --border:#E4E0D5;
+    --radius:12px;
+    --shadow:0 2px 10px rgba(11,30,61,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Heebo',sans-serif;
+    font-variant-numeric:tabular-nums;
+    min-height:100vh;
+  }
+  h1,h2,h3,.display{font-family:'Frank Ruhl Libre',serif;}
+
+  /* ---------- header ---------- */
+  header.top{
+    background:linear-gradient(160deg,var(--navy-deep),var(--navy));
+    color:#fff;
+    padding:28px 24px 34px;
+    border-bottom:3px solid var(--gold);
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.12em;
+    color:var(--gold-light);
+    font-weight:600;
+    margin:0 0 6px;
+  }
+  header.top h1{
+    margin:0 0 6px;
+    font-size:clamp(24px,4vw,32px);
+    font-weight:700;
+  }
+  header.top p{
+    margin:0;
+    color:#C9D2E3;
+    font-size:14px;
+    font-weight:300;
+  }
+
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px;}
+
+  /* ---------- config banner ---------- */
+  .banner{
+    background:var(--danger-bg);
+    border:1px solid #E8B9B3;
+    color:var(--danger);
+    border-radius:var(--radius);
+    padding:14px 18px;
+    font-size:14px;
+    margin:20px 0;
+    line-height:1.7;
+  }
+  .banner code{background:#fff;padding:2px 6px;border-radius:4px;font-size:12px;}
+
+  /* ---------- summary cards ---------- */
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+    margin-top:-46px;
+    position:relative;
+    z-index:2;
+  }
+  .stat-card{
+    background:var(--paper);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:18px 20px;
+    border-top:3px solid var(--gold);
+  }
+  .stat-card .label{
+    font-size:12px;color:var(--muted);font-weight:600;
+    letter-spacing:.03em;margin-bottom:8px;
+  }
+  .stat-card .value{
+    font-family:'Frank Ruhl Libre',serif;
+    font-size:26px;font-weight:700;color:var(--navy-deep);
+    line-height:1.2;
+  }
+  .stat-card .value.small{font-size:16px;font-weight:600;}
+  .stat-card .sub{font-size:12px;color:var(--muted);margin-top:4px;}
+
+  /* ---------- toolbar ---------- */
+  .toolbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin:28px 0 14px;
+    flex-wrap:wrap;
+  }
+  .toolbar h2{margin:0;font-size:20px;color:var(--navy-deep);}
+  .toolbar .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+  select.filter{
+    font-family:'Heebo',sans-serif;
+    padding:9px 12px;border-radius:8px;border:1px solid var(--border);
+    background:#fff;font-size:13px;color:var(--ink);
+  }
+  button{font-family:'Heebo',sans-serif;cursor:pointer;}
+  .btn{
+    border:none;border-radius:8px;padding:10px 18px;font-size:14px;font-weight:600;
+  }
+  .btn-primary{background:var(--gold);color:var(--navy-deep);}
+  .btn-primary:hover{background:var(--gold-light);}
+  .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--navy-deep);}
+  .btn-ghost:hover{background:#fff;}
+
+  /* ---------- table ---------- */
+  .table-card{
+    background:var(--paper);border-radius:var(--radius);box-shadow:var(--shadow);
+    overflow:hidden;margin-bottom:28px;
+  }
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  thead th{
+    text-align:right;padding:14px 16px;background:var(--navy-deep);color:#fff;
+    font-weight:600;font-size:12.5px;letter-spacing:.02em;cursor:pointer;
+    user-select:none;white-space:nowrap;
+  }
+  thead th:hover{background:var(--navy-soft);}
+  thead th .arrow{color:var(--gold-light);font-size:11px;margin-inline-start:4px;}
+  tbody tr{border-bottom:1px solid var(--border);}
+  tbody tr:last-child{border-bottom:none;}
+  tbody tr:hover{background:#FAF9F4;}
+  tbody td{padding:13px 16px;vertical-align:middle;white-space:nowrap;}
+  td.bank{font-weight:600;color:var(--navy-deep);}
+  .balance-cell{display:flex;flex-direction:column;gap:5px;min-width:130px;}
+  .balance-amount{font-weight:700;}
+  .progress-track{height:5px;background:#EDEAE0;border-radius:3px;overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));}
+  .badge{
+    display:inline-block;padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:600;
+  }
+  .badge.active{background:var(--success-bg);color:var(--success);}
+  .badge.closed{background:#EEE;color:var(--muted);}
+  .badge.soon{background:#FFF3DC;color:#8A6206;margin-inline-start:6px;}
+  .row-actions{display:flex;gap:6px;}
+  .icon-btn{
+    border:none;background:transparent;border-radius:6px;padding:6px 8px;font-size:14px;color:var(--muted);
+  }
+  .icon-btn:hover{background:var(--cream);color:var(--navy-deep);}
+  .icon-btn.danger:hover{color:var(--danger);}
+  .empty-state{padding:60px 20px;text-align:center;color:var(--muted);}
+  .empty-state .display{font-size:20px;color:var(--navy-deep);margin-bottom:8px;}
+
+  /* ---------- modal ---------- */
+  .overlay{
+    position:fixed;inset:0;background:rgba(11,30,61,0.55);
+    display:none;align-items:center;justify-content:center;padding:20px;z-index:50;
+  }
+  .overlay.open{display:flex;}
+  .modal{
+    background:#fff;border-radius:16px;max-width:560px;width:100%;
+    max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3);
+  }
+  .modal-head{
+    padding:20px 24px;border-bottom:1px solid var(--border);
+    display:flex;justify-content:space-between;align-items:center;
+    position:sticky;top:0;background:#fff;z-index:1;
+  }
+  .modal-head h3{margin:0;font-size:19px;color:var(--navy-deep);}
+  .modal-head button{border:none;background:transparent;font-size:20px;color:var(--muted);}
+  .modal-body{padding:22px 24px;}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+  .field{display:flex;flex-direction:column;gap:6px;}
+  .field.full{grid-column:1/-1;}
+  .field label{font-size:12.5px;font-weight:600;color:var(--navy-deep);}
+  .field input,.field select{
+    font-family:'Heebo',sans-serif;padding:10px 12px;border-radius:8px;
+    border:1px solid var(--border);font-size:14px;background:#FCFBF8;
+  }
+  .field input:focus,.field select:focus{outline:2px solid var(--gold);border-color:var(--gold);}
+  .field .hint{font-size:11.5px;color:var(--muted);}
+  .override-box{
+    background:var(--cream);border:1px dashed var(--border);border-radius:10px;
+    padding:14px;margin-top:6px;
+  }
+  .override-box p{margin:0 0 10px;font-size:12.5px;color:var(--muted);line-height:1.6;}
+  .modal-foot{
+    padding:16px 24px 22px;display:flex;justify-content:space-between;gap:10px;
+  }
+  .modal-foot .left{display:flex;gap:10px;}
+
+  /* ---------- upcoming payments ---------- */
+  .upcoming{
+    background:var(--paper);border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:18px 20px;margin-bottom:6px;
+  }
+  .upcoming h3{margin:0 0 12px;font-size:15px;color:var(--navy-deep);}
+  .upcoming ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;}
+  .upcoming li{
+    display:flex;justify-content:space-between;font-size:13.5px;
+    border-bottom:1px solid var(--border);padding-bottom:8px;
+  }
+  .upcoming li:last-child{border-bottom:none;padding-bottom:0;}
+  .upcoming .none{color:var(--muted);font-size:13px;}
+
+  footer.foot{
+    text-align:center;color:var(--muted);font-size:12px;padding:30px 0 40px;
+  }
+
+  /* ---------- mobile: table -> cards ---------- */
+  @media (max-width:820px){
+    .stats{grid-template-columns:1fr 1fr;margin-top:14px;}
+    header.top{padding-bottom:20px;}
+    .field-row{grid-template-columns:1fr;}
+    thead{display:none;}
+    table,tbody,tr,td{display:block;width:100%;}
+    tbody tr{padding:14px 16px;border-bottom:6px solid var(--cream);}
+    tbody td{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:8px 0;white-space:normal;text-align:left;
+    }
+    tbody td::before{
+      content:attr(data-label);font-size:11.5px;color:var(--muted);
+      font-weight:600;margin-inline-end:10px;
+    }
+    .balance-cell{align-items:flex-end;}
+    .row-actions{justify-content:flex-start;}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">הנבחרת</p>
+    <h1>מעקב הלוואות והתחייבויות</h1>
+    <p>תמונה חודשית מעודכנת של כל חובות החברה - יתרות, ריביות ותשלומים</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div id="configBanner" class="banner" style="display:none;">
+    ⚠️ לא הוגדרה כתובת שרת (Apps Script Web App URL). יש לפתוח את הקובץ <code>index.html</code>,
+    לאתר בתחילת קטע ה-JavaScript את המשתנה <code>API_URL</code>, ולהדביק שם את הכתובת שקיבלתם
+    בעת פרסום ה-Web App מתוך Google Sheets. עד אז הנתונים המוצגים הם נתוני דוגמה בלבד.
+  </div>
+
+  <section class="stats">
+    <div class="stat-card">
+      <div class="label">סה״כ יתרת חוב (הלוואות פעילות)</div>
+      <div class="value" id="statTotalBalance">-</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">סה״כ תשלום חודשי</div>
+      <div class="value" id="statMonthly">-</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">הלוואות פעילות</div>
+      <div class="value" id="statCount">-</div>
+      <div class="sub" id="statCountSub"></div>
+    </div>
+    <div class="stat-card">
+      <div class="label">אחוז שנפרע בממוצע</div>
+      <div class="value" id="statPaidPct">-</div>
+    </div>
+  </section>
+
+  <div class="upcoming" style="margin-top:16px;">
+    <h3>תשלומים ב-7 הימים הקרובים</h3>
+    <ul id="upcomingList"><li class="none">טוען...</li></ul>
+  </div>
+
+  <div class="toolbar">
+    <h2>כל ההלוואות</h2>
+    <div class="actions">
+      <select id="statusFilter" class="filter">
+        <option value="all">כל הסטטוסים</option>
+        <option value="active">פעילות בלבד</option>
+        <option value="closed">סגורות בלבד</option>
+      </select>
+      <button class="btn btn-ghost" id="refreshBtn">רענון נתונים</button>
+      <button class="btn btn-primary" id="addBtn">+ הלוואה חדשה</button>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <table id="loansTable">
+      <thead>
+        <tr>
+          <th data-key="bankName">בנק מלווה <span class="arrow"></span></th>
+          <th data-key="originalAmount">סכום מקורי <span class="arrow"></span></th>
+          <th data-key="balance">יתרה נוכחית <span class="arrow"></span></th>
+          <th data-key="monthlyPayment">תשלום חודשי <span class="arrow"></span></th>
+          <th data-key="paymentDay">יום בחודש <span class="arrow"></span></th>
+          <th data-key="annualRate">ריבית שנתית <span class="arrow"></span></th>
+          <th data-key="startDate">תחילה <span class="arrow"></span></th>
+          <th data-key="endDate">סיום צפוי <span class="arrow"></span></th>
+          <th data-key="status">סטטוס <span class="arrow"></span></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="loansBody">
+        <tr><td colspan="10" style="text-align:center;padding:40px;color:var(--muted);">טוען נתונים...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer class="foot">דשבורד פנימי — הנבחרת · הנתונים מסונכרנים מול Google Sheets</footer>
+</div>
+
+<!-- ---------- modal ---------- -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modalTitle">הלוואה חדשה</h3>
+      <button id="modalClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="loanForm">
+        <input type="hidden" id="f_id">
+        <div class="field-row">
+          <div class="field full">
+            <label>שם הבנק / הגורם המלווה *</label>
+            <input type="text" id="f_bankName" required placeholder="לדוגמה: בנק הפועלים">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>סכום הלוואה מקורי (₪) *</label>
+            <input type="number" id="f_originalAmount" required min="0" step="1">
+          </div>
+          <div class="field">
+            <label>ריבית שנתית (%) *</label>
+            <input type="number" id="f_annualRate" required min="0" step="0.01" placeholder="0 אם ללא ריבית">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>תשלום חודשי (₪) *</label>
+            <input type="number" id="f_monthlyPayment" required min="0" step="1">
+          </div>
+          <div class="field">
+            <label>יום תשלום בחודש *</label>
+            <input type="number" id="f_paymentDay" required min="1" max="31" placeholder="1-31">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>תאריך תחילת ההלוואה *</label>
+            <input type="date" id="f_startDate" required>
+          </div>
+          <div class="field">
+            <label>תאריך סיום צפוי</label>
+            <input type="date" id="f_endDate">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field full">
+            <label>סטטוס</label>
+            <select id="f_status">
+              <option value="active">פעילה</option>
+              <option value="closed">סגורה</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="override-box">
+          <p>
+            ברירת המחדל: היתרה מחושבת אוטומטית לפי לוח סילוקין (קרן + ריבית) מתאריך התחילה.
+            אם היתרה בפועל שונה (למשל לאחר פירעון מוקדם), אפשר לעדכן כאן ידנית -
+            החישוב האוטומטי ימשיך הלאה מהערך הזה.
+          </p>
+          <div class="field-row" style="margin-bottom:0;">
+            <div class="field">
+              <label>יתרה מעודכנת ידנית (₪)</label>
+              <input type="number" id="f_manualBalance" min="0" step="1" placeholder="השאירו ריק לחישוב אוטומטי">
+            </div>
+            <div class="field">
+              <label>נכון לתאריך</label>
+              <input type="date" id="f_manualBalanceDate">
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-foot">
+      <div class="left">
+        <button class="btn btn-primary" id="saveBtn">שמירה</button>
+        <button class="btn btn-ghost" id="cancelBtn">ביטול</button>
+      </div>
+      <button class="btn btn-ghost" id="deleteBtn" style="color:var(--danger);display:none;">מחיקת הלוואה</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   הגדרה: כתובת ה-Web App של Apps Script
+   אחרי הפריסה (ראו README.md) יש להדביק כאן את הכתובת שמתקבלת.
+   דוגמה: 'https://script.google.com/macros/s/AKfycb.../exec'
+========================================================= */
+const API_URL = ''; // <-- להדביק כאן את כתובת ה-Web App
+const API_TOKEN = ''; // <-- להדביק כאן את אותו הטוקן שהוגדר ב-Script Properties (ראו README.md)
+
+/* -------------------- state -------------------- */
+let loans = [];
+let sortKey = 'balance';
+let sortDir = 'desc';
+let statusFilterVal = 'all';
+
+const SAMPLE_DATA = [
+  { id:'demo1', bankName:'בנק לאומי', originalAmount:400000, annualRate:5.2, monthlyPayment:7500,
+    paymentDay:5, startDate:'2023-01-05', endDate:'2028-01-05', status:'active', manualBalance:null, manualBalanceDate:null },
+  { id:'demo2', bankName:'בנק הפועלים', originalAmount:150000, annualRate:0, monthlyPayment:6250,
+    paymentDay:15, startDate:'2024-06-15', endDate:'2026-06-15', status:'active', manualBalance:null, manualBalanceDate:null },
+  { id:'demo3', bankName:'מזרחי טפחות', originalAmount:80000, annualRate:4.1, monthlyPayment:4000,
+    paymentDay:1, startDate:'2022-03-01', endDate:'2024-03-01', status:'closed', manualBalance:0, manualBalanceDate:'2024-03-01' }
+];
+
+/* -------------------- helpers: dates & math -------------------- */
+function daysInMonth(year, monthIndex){ return new Date(year, monthIndex+1, 0).getDate(); }
+
+function countPaymentsSince(baseDateStr, paymentDay, today){
+  const base = new Date(baseDateStr + 'T00:00:00');
+  if (isNaN(base.getTime())) return 0;
+  let count = 0;
+  let cursor = new Date(base.getFullYear(), base.getMonth(), 1);
+  let guard = 0;
+  while (guard < 1200) {
+    guard++;
+    const dim = daysInMonth(cursor.getFullYear(), cursor.getMonth());
+    const day = Math.min(paymentDay || 1, dim);
+    const payDate = new Date(cursor.getFullYear(), cursor.getMonth(), day);
+    if (payDate > base && payDate <= today) count++;
+    if (payDate > today) break;
+    cursor.setMonth(cursor.getMonth() + 1);
+  }
+  return count;
+}
+
+function nextPaymentDate(paymentDay, today){
+  const dimThis = daysInMonth(today.getFullYear(), today.getMonth());
+  const dayThis = Math.min(paymentDay || 1, dimThis);
+  let candidate = new Date(today.getFullYear(), today.getMonth(), dayThis);
+  if (candidate < today) {
+    let m = today.getMonth() + 1, y = today.getFullYear();
+    if (m > 11) { m = 0; y++; }
+    const dim = daysInMonth(y, m);
+    candidate = new Date(y, m, Math.min(paymentDay || 1, dim));
+  }
+  return candidate;
+}
+
+function calcBalance(loan, today){
+  const hasOverride = loan.manualBalance !== null && loan.manualBalance !== undefined && loan.manualBalance !== '';
+  const baseAmount = hasOverride ? Number(loan.manualBalance) : Number(loan.originalAmount);
+  const baseDateStr = hasOverride ? loan.manualBalanceDate : loan.startDate;
+  if (!baseDateStr) return baseAmount;
+  const n = countPaymentsSince(baseDateStr, Number(loan.paymentDay) || 1, today);
+  const r = (Number(loan.annualRate) || 0) / 100 / 12;
+  const pmt = Number(loan.monthlyPayment) || 0;
+  let balance;
+  if (n <= 0) balance = baseAmount;
+  else if (r === 0) balance = baseAmount - pmt * n;
+  else balance = baseAmount * Math.pow(1+r, n) - pmt * (Math.pow(1+r, n) - 1) / r;
+  return Math.max(0, balance);
+}
+
+function fmtMoney(n){
+  return '₪' + Math.round(n).toLocaleString('he-IL');
+}
+function fmtDate(d){
+  if (!d) return '-';
+  const parts = String(d).split('-');
+  if (parts.length !== 3) return d;
+  return parts[2] + '.' + parts[1] + '.' + parts[0];
+}
+
+/* -------------------- data loading -------------------- */
+async function loadLoans(){
+  if (!API_URL) {
+    document.getElementById('configBanner').style.display = 'block';
+    loans = SAMPLE_DATA.slice();
+    render();
+    return;
+  }
+  try {
+    const res = await fetch(API_URL + '?token=' + encodeURIComponent(API_TOKEN));
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'שגיאה לא ידועה');
+    loans = data.loans;
+    render();
+  } catch (err) {
+    document.getElementById('loansBody').innerHTML =
+      '<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--danger);">שגיאה בטעינת הנתונים: ' + err.message + '</td></tr>';
+  }
+}
+
+async function saveLoan(loan, isNew){
+  if (!API_URL) { alert('יש להגדיר תחילה את כתובת ה-API בקובץ index.html (ראו README.md).'); return false; }
+  const payload = { action: isNew ? 'add' : 'update', loan: loan, token: API_TOKEN };
+  const res = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(payload) });
+  const data = await res.json();
+  if (!data.ok) { alert('שגיאה בשמירה: ' + data.error); return false; }
+  return true;
+}
+
+async function deleteLoan(id){
+  if (!API_URL) { alert('יש להגדיר תחילה את כתובת ה-API בקובץ index.html (ראו README.md).'); return false; }
+  const res = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({ action:'delete', id: id, token: API_TOKEN }) });
+  const data = await res.json();
+  if (!data.ok) { alert('שגיאה במחיקה: ' + data.error); return false; }
+  return true;
+}
+
+/* -------------------- rendering -------------------- */
+function computedRows(){
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  return loans.map(l => {
+    const balance = calcBalance(l, today);
+    const pctPaid = l.originalAmount > 0 ? Math.min(100, Math.max(0, 100 * (1 - balance / l.originalAmount))) : 0;
+    const next = nextPaymentDate(Number(l.paymentDay) || 1, today);
+    const daysUntil = Math.round((next - today) / 86400000);
+    return Object.assign({}, l, { balance, pctPaid, nextPaymentDate: next, daysUntil });
+  });
+}
+
+function render(){
+  const rows = computedRows();
+  const filtered = rows.filter(r => statusFilterVal === 'all' ? true : r.status === statusFilterVal);
+
+  filtered.sort((a,b) => {
+    let av = a[sortKey], bv = b[sortKey];
+    if (typeof av === 'string') { av = av.toLowerCase(); bv = (bv||'').toLowerCase(); }
+    if (av < bv) return sortDir === 'asc' ? -1 : 1;
+    if (av > bv) return sortDir === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  renderStats(rows);
+  renderUpcoming(rows);
+  renderTable(filtered);
+}
+
+function renderStats(rows){
+  const active = rows.filter(r => r.status === 'active');
+  const totalBalance = active.reduce((s,r) => s + r.balance, 0);
+  const totalMonthly = active.reduce((s,r) => s + (Number(r.monthlyPayment)||0), 0);
+  const avgPct = active.length ? active.reduce((s,r) => s + r.pctPaid, 0) / active.length : 0;
+
+  document.getElementById('statTotalBalance').textContent = fmtMoney(totalBalance);
+  document.getElementById('statMonthly').textContent = fmtMoney(totalMonthly);
+  document.getElementById('statCount').textContent = active.length;
+  document.getElementById('statCountSub').textContent = (rows.length - active.length) + ' סגורות';
+  document.getElementById('statPaidPct').textContent = Math.round(avgPct) + '%';
+}
+
+function renderUpcoming(rows){
+  const el = document.getElementById('upcomingList');
+  const soon = rows.filter(r => r.status === 'active' && r.daysUntil >= 0 && r.daysUntil <= 7)
+                    .sort((a,b) => a.daysUntil - b.daysUntil);
+  if (!soon.length) { el.innerHTML = '<li class="none">אין תשלומים צפויים בשבוע הקרוב</li>'; return; }
+  el.innerHTML = soon.map(r => {
+    const when = r.daysUntil === 0 ? 'היום' : (r.daysUntil === 1 ? 'מחר' : 'בעוד ' + r.daysUntil + ' ימים');
+    return '<li><span>' + escapeHtml(r.bankName) + '</span><span>' + fmtMoney(r.monthlyPayment) + ' · ' + when + '</span></li>';
+  }).join('');
+}
+
+function renderTable(rows){
+  const body = document.getElementById('loansBody');
+  if (!rows.length) {
+    body.innerHTML = '<tr><td colspan="10"><div class="empty-state"><div class="display">אין הלוואות להצגה</div>לחצו על "הלוואה חדשה" כדי להתחיל</div></td></tr>';
+    return;
+  }
+  body.innerHTML = rows.map(r => {
+    const badgeClass = r.status === 'active' ? 'active' : 'closed';
+    const badgeText = r.status === 'active' ? 'פעילה' : 'סגורה';
+    const soonBadge = (r.status === 'active' && r.daysUntil >= 0 && r.daysUntil <= 7)
+      ? '<span class="badge soon">בעוד ' + r.daysUntil + ' ימ׳</span>' : '';
+    return '<tr>' +
+      '<td class="bank" data-label="בנק מלווה">' + escapeHtml(r.bankName) + '</td>' +
+      '<td data-label="סכום מקורי">' + fmtMoney(r.originalAmount) + '</td>' +
+      '<td data-label="יתרה נוכחית"><div class="balance-cell"><span class="balance-amount">' + fmtMoney(r.balance) + '</span>' +
+        '<div class="progress-track"><div class="progress-fill" style="width:' + r.pctPaid.toFixed(0) + '%"></div></div></div></td>' +
+      '<td data-label="תשלום חודשי">' + fmtMoney(r.monthlyPayment) + soonBadge + '</td>' +
+      '<td data-label="יום בחודש">' + r.paymentDay + '</td>' +
+      '<td data-label="ריבית שנתית">' + (Number(r.annualRate)||0).toFixed(2) + '%</td>' +
+      '<td data-label="תחילה">' + fmtDate(r.startDate) + '</td>' +
+      '<td data-label="סיום צפוי">' + fmtDate(r.endDate) + '</td>' +
+      '<td data-label="סטטוס"><span class="badge ' + badgeClass + '">' + badgeText + '</span></td>' +
+      '<td><div class="row-actions">' +
+        '<button class="icon-btn" title="עריכה" onclick="openEdit(\'' + r.id + '\')">✎</button>' +
+        '<button class="icon-btn danger" title="מחיקה" onclick="handleDelete(\'' + r.id + '\')">🗑</button>' +
+      '</div></td>' +
+    '</tr>';
+  }).join('');
+}
+
+function escapeHtml(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* -------------------- sorting -------------------- */
+document.querySelectorAll('#loansTable thead th[data-key]').forEach(th => {
+  th.addEventListener('click', () => {
+    const key = th.dataset.key;
+    if (sortKey === key) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+    else { sortKey = key; sortDir = 'asc'; }
+    document.querySelectorAll('#loansTable thead .arrow').forEach(a => a.textContent = '');
+    th.querySelector('.arrow').textContent = sortDir === 'asc' ? '▲' : '▼';
+    render();
+  });
+});
+
+document.getElementById('statusFilter').addEventListener('change', e => {
+  statusFilterVal = e.target.value;
+  render();
+});
+document.getElementById('refreshBtn').addEventListener('click', loadLoans);
+
+/* -------------------- modal -------------------- */
+const overlay = document.getElementById('overlay');
+const form = document.getElementById('loanForm');
+
+function openAdd(){
+  form.reset();
+  document.getElementById('f_id').value = '';
+  document.getElementById('f_status').value = 'active';
+  document.getElementById('modalTitle').textContent = 'הלוואה חדשה';
+  document.getElementById('deleteBtn').style.display = 'none';
+  overlay.classList.add('open');
+}
+
+function openEdit(id){
+  const loan = loans.find(l => l.id === id);
+  if (!loan) return;
+  document.getElementById('f_id').value = loan.id;
+  document.getElementById('f_bankName').value = loan.bankName || '';
+  document.getElementById('f_originalAmount').value = loan.originalAmount || '';
+  document.getElementById('f_annualRate').value = loan.annualRate != null ? loan.annualRate : '';
+  document.getElementById('f_monthlyPayment').value = loan.monthlyPayment || '';
+  document.getElementById('f_paymentDay').value = loan.paymentDay || '';
+  document.getElementById('f_startDate').value = loan.startDate || '';
+  document.getElementById('f_endDate').value = loan.endDate || '';
+  document.getElementById('f_status').value = loan.status || 'active';
+  document.getElementById('f_manualBalance').value = loan.manualBalance != null ? loan.manualBalance : '';
+  document.getElementById('f_manualBalanceDate').value = loan.manualBalanceDate || '';
+  document.getElementById('modalTitle').textContent = 'עריכת הלוואה - ' + loan.bankName;
+  document.getElementById('deleteBtn').style.display = 'inline-block';
+  overlay.classList.add('open');
+}
+
+function closeModal(){ overlay.classList.remove('open'); }
+
+document.getElementById('addBtn').addEventListener('click', openAdd);
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('cancelBtn').addEventListener('click', closeModal);
+overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+
+document.getElementById('saveBtn').addEventListener('click', async () => {
+  if (!form.reportValidity()) return;
+  const id = document.getElementById('f_id').value;
+  const isNew = !id;
+  const loan = {
+    id: id || undefined,
+    bankName: document.getElementById('f_bankName').value.trim(),
+    originalAmount: Number(document.getElementById('f_originalAmount').value),
+    annualRate: Number(document.getElementById('f_annualRate').value),
+    monthlyPayment: Number(document.getElementById('f_monthlyPayment').value),
+    paymentDay: Number(document.getElementById('f_paymentDay').value),
+    startDate: document.getElementById('f_startDate').value,
+    endDate: document.getElementById('f_endDate').value || null,
+    status: document.getElementById('f_status').value,
+    manualBalance: document.getElementById('f_manualBalance').value === '' ? null : Number(document.getElementById('f_manualBalance').value),
+    manualBalanceDate: document.getElementById('f_manualBalanceDate').value || null
+  };
+  const ok = await saveLoan(loan, isNew);
+  if (ok) { closeModal(); loadLoans(); }
+});
+
+document.getElementById('deleteBtn').addEventListener('click', async () => {
+  const id = document.getElementById('f_id').value;
+  if (!confirm('למחוק את ההלוואה הזו? הפעולה בלתי הפיכה.')) return;
+  const ok = await deleteLoan(id);
+  if (ok) { closeModal(); loadLoans(); }
+});
+
+async function handleDelete(id){
+  const loan = loans.find(l => l.id === id);
+  if (!confirm('למחוק את ההלוואה "' + (loan ? loan.bankName : '') + '"? הפעולה בלתי הפיכה.')) return;
+  const ok = await deleteLoan(id);
+  if (ok) loadLoans();
+}
+
+/* -------------------- init -------------------- */
+document.querySelector('#loansTable thead th[data-key="balance"] .arrow').textContent = '▼';
+loadLoans();
+</script>
+</body>
+</html>
